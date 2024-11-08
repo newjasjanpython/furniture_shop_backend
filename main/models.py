@@ -26,6 +26,7 @@ class Category(BaseModel):
 
 
 class Product(BaseModel):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     thumbnail = models.ImageField(upload_to='images/')
     title = models.CharField(max_length=512)
     description = models.TextField()
