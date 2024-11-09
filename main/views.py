@@ -87,6 +87,154 @@ class AdminCategoriesApiView(APIView):
 
         return Response({
             'status': 'error',
+            'code': 400,
+            'errors': ["No object is shown"]
+        }, status=HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, guid=None) -> Response:
+        if guid:
+            try:
+                object_ = Category.objects.get(guid=guid)
+                serializer = AdminCategorySerializer(data=request.data, instance=object_)
+                data = dict(serializer.data)
+                object_.delete()
+
+                return Response({
+                    'status': 'ok',
+                    'code': 200,
+                    'results': data
+                })
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Not found"]
+                }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'status': 'error',
+            'code': 400,
+            'errors': ["No object is shown"]
+        }, status=HTTP_400_BAD_REQUEST)
+
+
+class ProductsApiView(APIView):
+    def get(self, request: Request, cguid=None) -> Response:
+        object_list = Product.objects.all()
+        if cguid:
+            try:
+                category = Category.objects.get(guid=cguid)
+                object_list = object_list.filter(category=category)
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Category not found"]
+                }, status=HTTP_404_NOT_FOUND)
+        
+        serializer = ProductSerializer(object_list, many=True)
+
+        return Response({
+            'status': 'ok',
             'code': 200,
+            'results': serializer.data
+        }, status=HTTP_200_OK)
+
+
+class AdminProductsApiView(APIView):
+    def get(self, request: Request, guid=None) -> Response:
+        object_list = Product.objects.all()
+        if guid:
+            try:
+                object_ = object_list.get(guid=guid)
+                serializer = AdminProductSerializer(object_)
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Not found"]
+                }, status=HTTP_404_NOT_FOUND)
+        else:
+            serializer = AdminProductSerializer(object_list, many=True)
+
+        return Response({
+            'status': 'ok',
+            'code': 200,
+            'results': serializer.data
+        }, status=HTTP_200_OK)
+
+    def post(self, request: Request) -> Response:
+        serializer = AdminProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({
+                'status': 'ok',
+                'code': 200,
+                'results': serializer.data
+            }, status=HTTP_200_OK)
+
+        return Response({
+            'status': 'error',
+            'code': 400,
+            'errors': serializer.errors
+        }, status=HTTP_400_BAD_REQUEST)
+
+    def put(self, request: Request, guid=None) -> Response:
+        if guid:
+            try:
+                object_ = Product.objects.get(guid=guid)
+                serializer = AdminProductSerializer(data=request.data, instance=object_)
+
+                if serializer.is_valid():
+                    serializer.save()
+
+                    return Response({
+                        'status': 'ok',
+                        'code': 200,
+                        'results': serializer.data
+                    })
+
+                return Response({
+                    'status': 'error',
+                    'code': 400,
+                    'errors': serializer.errors
+                }, status=HTTP_400_BAD_REQUEST)
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Not found"]
+                }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'status': 'error',
+            'code': 400,
+            'errors': ["No object is shown"]
+        }, status=HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, guid=None) -> Response:
+        if guid:
+            try:
+                object_ = Product.objects.get(guid=guid)
+                serializer = AdminProductSerializer(data=request.data, instance=object_)
+                data = dict(serializer.data)
+                object_.delete()
+
+                return Response({
+                    'status': 'ok',
+                    'code': 200,
+                    'results': data
+                })
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Not found"]
+                }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'status': 'error',
+            'code': 400,
             'errors': ["No object is shown"]
         }, status=HTTP_400_BAD_REQUEST)
