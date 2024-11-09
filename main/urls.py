@@ -8,6 +8,7 @@ app_name = 'main'
 urlpatterns = [
     path('categories/', CategoriesApiView.as_view()),
     path('products/', ProductsApiView.as_view()),
+    path('products/<uuid:guid>/', ProductsApiView.as_view()),
     path('products/of-<uuid:cguid>/', ProductsApiView.as_view()),
 
     path('admin/categories/', AdminCategoriesApiView.as_view()),

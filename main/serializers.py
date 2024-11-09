@@ -1,5 +1,5 @@
 from rest_framework.serializers import ( ModelSerializer, ReadOnlyField )
-from .models import Category, Product, ProductImage
+from .models import Category, Product
 
 
 class ModelStandartReadOnly:
@@ -10,7 +10,7 @@ class ModelStandartReadOnly:
 
 
 class CategorySerializer(ModelStandartReadOnly, ModelSerializer):
-    title = ReadOnlyField(source='title')
+    title = ReadOnlyField()
 
     class Meta:
         model = Category
@@ -24,14 +24,14 @@ class AdminCategorySerializer(ModelStandartReadOnly, ModelSerializer):
 
 
 class ProductSerializer(ModelStandartReadOnly, ModelSerializer):
-    title = ReadOnlyField(source='title')
-    thumbnail = ReadOnlyField(source='thumbnail')
-    description = ReadOnlyField(source='description')
-    price = ReadOnlyField(source='price')
+    title = ReadOnlyField()
+    images = ReadOnlyField(source='get_images')
+    description = ReadOnlyField()
+    price = ReadOnlyField()
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'thumbnail', 'title', 'description', 'price', 'created_at', 'updated_at']
+        fields = ['id', 'guid', 'images', 'title', 'description', 'price', 'created_at', 'updated_at']
 
 
 class AdminProductSerializer(ModelStandartReadOnly, ModelSerializer):

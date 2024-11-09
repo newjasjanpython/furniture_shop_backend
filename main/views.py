@@ -119,8 +119,24 @@ class AdminCategoriesApiView(APIView):
 
 
 class ProductsApiView(APIView):
-    def get(self, request: Request, cguid=None) -> Response:
+    def get(self, request: Request, guid=None, cguid=None) -> Response:
         object_list = Product.objects.all()
+        if guid:
+            try:
+                object_ = object_list.get(guid=guid)
+                serializer = ProductSerializer(object_)
+
+                return Response({
+                    'status': 'ok',
+                    'code': 200,
+                    'results': serializer.data
+                }, status=HTTP_200_OK)
+            except:
+                return Response({
+                    'status': 'error',
+                    'code': 404,
+                    'errors': ["Not found"]
+                }, status=HTTP_404_NOT_FOUND)
         if cguid:
             try:
                 category = Category.objects.get(guid=cguid)
