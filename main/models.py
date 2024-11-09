@@ -36,20 +36,9 @@ class Product(BaseModel):
         return str(self.title)
 
 
-IMAGE_SCRIPT = """
-<div id="content-{id}">
-    <button onclick="() => { document.getElementById('{id}').innerHTML = `<img src='{image}' width='300px' alt='{title}'/>`; }">Watch image for ``{title}``</button>
-</div>
-"""
-
-
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ims')
     content = models.ImageField(upload_to='images/')
 
     def __str__(self):
-        return mark_safe(IMAGE_SCRIPT.format(**{
-            'id': self.guid,
-            'title': f"Image for {self.product.title}",
-            'image': self.content.url
-        }))
+        return str(self.product) + " idk this image"
